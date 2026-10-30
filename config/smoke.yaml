@@ -1,0 +1,34 @@
+run_id: artwork-search-smoke
+seed: 42
+device: cpu
+
+data:
+  source: met_open_access
+  local_only: true
+  max_artworks: 10
+  max_queries: 3
+  require_images: true
+
+model:
+  name: openai/clip-vit-base-patch32
+  pretrained: true
+  fine_tune: false
+  cache_embeddings: true
+
+search:
+  top_k: 5
+  similarity_threshold: 0.25
+
+policy:
+  require_metadata_checks: true
+  fail_closed: true
+  allow_unverified_results: true
+  defer_on_missing_evidence: true
+
+evaluation:
+  enabled: true
+  failure_injection: true
+
+output:
+  receipt_path: experiments/receipt-smoke.json
+  results_path: experiments/results-smoke.json
