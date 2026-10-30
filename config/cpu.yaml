@@ -1,0 +1,46 @@
+run_id: artwork-search-cpu
+seed: 42
+device: cpu
+
+data:
+  source: met_open_access
+  local_only: true
+  max_artworks: 300
+  max_queries: 40
+  require_images: true
+  dataset_manifest: data/artwork_manifest.json
+
+model:
+  name: openai/clip-vit-base-patch32
+  pretrained: true
+  fine_tune: false
+  cache_embeddings: true
+  embedding_cache: data/cached_embeddings/
+
+search:
+  top_k: 5
+  similarity_threshold: 0.25
+
+policy:
+  require_metadata_checks: true
+  fail_closed: true
+  allow_unverified_results: true
+  defer_on_missing_evidence: true
+
+evaluation:
+  enabled: true
+  split: test
+  failure_injection: true
+  metrics:
+    - recall_at_5
+    - mean_reciprocal_rank
+    - false_admission_rate
+    - unnecessary_deferral_rate
+    - checker_coverage
+    - failure_detection_rate
+    - repair_success_rate
+
+output:
+  receipt_path: experiments/receipt.json
+  results_path: experiments/results-cpu.json
+  compute_path: experiments/compute.json
